@@ -64,8 +64,7 @@ def encode(a,b,c):
     ref_images = [os.path.join(args.src_dir, x) for x in os.listdir(args.src_dir) if x[0] not in '._']
     ref_images = list(filter(os.path.isfile, ref_images))
 
-    if len(ref_images) == 0:
-        raise Exception('%s is empty' % args.src_dir)
+
 
     os.makedirs(args.data_dir, exist_ok=True)
     os.makedirs(args.mask_dir, exist_ok=True)
@@ -78,6 +77,8 @@ def encode(a,b,c):
     generator_network, discriminator_network, Gs_network = pretrained_networks.load_networks(args.model_url)
 
     generator = Generator(Gs_network, args.batch_size, randomize_noise=args.randomize_noise)
+    if len(ref_images) == 0:
+        return generator
     if (args.dlatent_avg != ''):
         generator.set_dlatent_avg(np.load(args.dlatent_avg))
 
